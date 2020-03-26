@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import financas.model.Conta;
+import financas.model.dao.DAO;
 import financas.service.ContaService;
 import financas.util.jpa.JPAEntityManager;
 
@@ -29,9 +30,8 @@ public class ContaResource {
 	@GET
 	@Produces("application/json")
 	public Response get(@PathParam("id") Long id) {
-		EntityManager manager = JPAEntityManager.getEntityManager();
-		Conta _conta = manager.find(Conta.class, id);
-		manager.close();
+		DAO<Conta> dao = new DAO<>(Conta.class);
+		Conta _conta = dao.consultar(id);
 		if (_conta != null) {
 			return Response.ok(_conta).build();
 		}
@@ -42,16 +42,8 @@ public class ContaResource {
 	@Produces("application/json")
 	@Consumes("application/json")
 	public Response add(Conta conta) {
-		EntityManager manager = JPAEntityManager.getEntityManager();
-		try {
-			manager.getTransaction().begin();
-
-			manager.persist(conta);
-
-			manager.getTransaction().commit();
-		} finally {
-			manager.close();
-		}
+		DAO<Conta> dao = new DAO<>(Conta.class);
+		dao.adicionar(conta);
 		return Response.ok(conta).build();
 	}
 
@@ -59,14 +51,8 @@ public class ContaResource {
 	@Produces({ "application/json" })
 	@Consumes({ "application/json" })
 	public Response update(Conta conta) {
-		EntityManager manager = JPAEntityManager.getEntityManager();
-		try {
-			manager.getTransaction().begin();
-			manager.merge(conta);
-			manager.getTransaction().commit();
-		} finally {
-			manager.close();
-		}
+		DAO<Conta> dao = new DAO<>(Conta.class);
+		dao.alterar(conta);;
 		return Response.ok(conta).build();
 	}
 
@@ -74,16 +60,8 @@ public class ContaResource {
 	@DELETE
 	@Produces("application/json")
 	public Response delete(@PathParam("id") Long id) {
-		EntityManager manager = JPAEntityManager.getEntityManager();
-		Conta _conta = manager.find(Conta.class, id);
-		if (_conta != null) {
-			try {
-				manager.getTransaction().begin();
-				manager.remove(_conta);
-				manager.getTransaction().commit();
-			} finally {
-				manager.close();
-			}
+		DAO<Conta> dao = new DAO<>(Conta.class);
+		if (dao.excluir(id)) {
 			return Response.ok().build();
 		}
 		return Response.status(Response.Status.NOT_FOUND).build();
