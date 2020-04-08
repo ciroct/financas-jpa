@@ -1,6 +1,10 @@
 package financas.model.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 
 import financas.util.jpa.JPAEntityManager;
 
@@ -54,5 +58,32 @@ public class DAO<T> {
 			manager.close();
 		}
 		return true;
+	}
+
+	public List<T> listarGenerico(String query, Object... params) {
+		manager = JPAEntityManager.getEntityManager();
+		TypedQuery<T> q = manager.createNamedQuery(query, classe);
+		for (int i = 0; i < params.length; i++) {
+			q.setParameter(i + 1, params[i]);
+		}
+		List<T> lista = q.getResultList();
+		manager.close();
+		return lista;
+	}
+
+	public T consultarGenerico(String query, Object... params) {
+		manager = JPAEntityManager.getEntityManager();
+		TypedQuery<T> q = manager.createNamedQuery(query, classe);
+		for (int i = 0; i < params.length; i++) {
+			q.setParameter(i + 1, params[i]);
+		}
+		try {
+			T obj = q.getSingleResult();
+			return obj;
+		} catch (NoResultException e) {
+			return null;
+		} finally {
+			manager.close();
+		}
 	}
 }
