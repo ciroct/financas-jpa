@@ -1,12 +1,7 @@
 package financas.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -15,17 +10,14 @@ import javax.persistence.Table;
 @Entity
 @NamedQueries({ 
 	@NamedQuery(name = "Conta.listarTodas", 
-			    query = "select c from Conta c order by c.titular"),
+                query = "select c from Conta c order by c.titular"),
 	@NamedQuery(name = "Conta.consultarPorBanco", 
 	            query = "select c from Conta c where c.banco=?1"),
-	@NamedQuery(name = "Conta.consultarPorNumero",
-	            query = "select c from Conta c where c.numero=?1")
+	@NamedQuery(name = "Conta.consultarPorNumero", 
+	            query = "select c from Conta c where c.numero=?1") 
 })
-public class Conta implements Serializable {
+public class Conta extends AbstractEntity {
 	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 	@Column(name = "nm_titular", length = 100)
 	private String titular;
 	@Column(name = "nm_banco", length = 50)
@@ -38,24 +30,8 @@ public class Conta implements Serializable {
 	public Conta() {
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public Conta(Integer numero) {
 		setNumero(numero);
-	}
-
-	public String getTitular() {
-		return titular;
-	}
-
-	public void setTitular(String titular) {
-		this.titular = titular;
 	}
 
 	public String getBanco() {
@@ -83,32 +59,7 @@ public class Conta implements Serializable {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((numero == null) ? 0 : numero.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!(obj instanceof Conta))
-			return false;
-		Conta other = (Conta) obj;
-		if (numero == null) {
-			if (other.numero != null)
-				return false;
-		} else if (!numero.equals(other.numero))
-			return false;
-		return true;
-	}
-
-	@Override
 	public String toString() {
-		return "Conta [id=" + id + ",titular=" + titular + ", banco=" + banco + ", agencia=" + agencia + ", numero="
-				+ numero + "]";
+		return "Conta [id=" + getId() + ", titular=" + titular + ", banco=" + banco + ", agencia=" + agencia + ", numero=" + numero + "]";
 	}
-
 }
