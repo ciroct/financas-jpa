@@ -31,7 +31,11 @@ public class PessoaJuridicaResource {
 	@Path("/{cnpj}")
 	@GET
 	@Produces("application/json")
+<<<<<<< HEAD
 	public Response get(@PathParam("cnpj") String cnpj) {
+=======
+	public Response get(@PathParam("cpf") String cnpj) {
+>>>>>>> 85d42128fc868fbc6a336e5812a54aec74fcb5fd
 		DAO<PessoaJuridica> dao = new DAO<>(PessoaJuridica.class);
 		PessoaJuridica pf = dao.consultarGenerico("PessoaJuridica.consultarPorCnpj", cnpj);
 		if (pf != null) {

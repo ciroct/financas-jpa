@@ -1,5 +1,6 @@
 package financas.model;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+=======
+import javax.persistence.Column;
+import javax.persistence.Entity;
+>>>>>>> 85d42128fc868fbc6a336e5812a54aec74fcb5fd
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -20,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @NamedQueries({ 
 	@NamedQuery(name = "Conta.listarTodas", 
+<<<<<<< HEAD
                 query = "select c from Conta c"),
 	@NamedQuery(name = "Conta.consultarPorId", 
     			query = "select c from Conta c where c.id=?1"),
@@ -33,6 +39,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 })
 public class Conta extends AbstractEntity {
 	private static final long serialVersionUID = 1L;
+=======
+                query = "select c from Conta c order by c.titular"),
+	@NamedQuery(name = "Conta.consultarPorBanco", 
+	            query = "select c from Conta c where c.banco=?1"),
+	@NamedQuery(name = "Conta.consultarPorNumero", 
+	            query = "select c from Conta c where c.numero=?1") 
+})
+public class Conta extends AbstractEntity {
+	private static final long serialVersionUID = 1L;
+	@Column(name = "nm_titular", length = 100)
+	private String titular;
+>>>>>>> 85d42128fc868fbc6a336e5812a54aec74fcb5fd
 	@Column(name = "nm_banco", length = 50)
 	private String banco;
 	@Column(name = "nm_agencia", length = 50)
@@ -45,9 +63,12 @@ public class Conta extends AbstractEntity {
                                    new ArrayList<>();
 
 
+<<<<<<< HEAD
 	public Conta() {
 	}
 
+=======
+>>>>>>> 85d42128fc868fbc6a336e5812a54aec74fcb5fd
 	public Conta(Integer numero) {
 		setNumero(numero);
 	}
@@ -75,6 +96,7 @@ public class Conta extends AbstractEntity {
 	public void setNumero(Integer numero) {
 		this.numero = numero;
 	}
+<<<<<<< HEAD
 	
     @JsonIgnore
 	public List<Movimentacao> getMovimentacoes() {
@@ -89,5 +111,11 @@ public class Conta extends AbstractEntity {
 	@Override
 	public String toString() {
 		return "Conta [id=" + getId() + ", banco=" + banco + ", agencia=" + agencia + ", numero=" + numero + "]";
+=======
+
+	@Override
+	public String toString() {
+		return "Conta [id=" + getId() + ", titular=" + titular + ", banco=" + banco + ", agencia=" + agencia + ", numero=" + numero + "]";
+>>>>>>> 85d42128fc868fbc6a336e5812a54aec74fcb5fd
 	}
 }

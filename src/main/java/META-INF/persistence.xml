@@ -24,7 +24,7 @@
 			
 			<property
 				name="javax.persistence.schema-generation.database.action"
-				value="none" />
+				value="create" />
 		</properties>
 	</persistence-unit>
 </persistence>
