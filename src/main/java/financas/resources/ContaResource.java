@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -23,7 +22,7 @@ import financas.model.dao.DAO;
 import financas.model.dto.ContaComNumeroEAgenciaDTO;
 import financas.util.jpa.JPAEntityManager;
 
-@Path("/contas")
+@Path("/conta")
 public class ContaResource {
 
 	@GET
@@ -36,12 +35,12 @@ public class ContaResource {
 	}
 
 
-	@Path("/{numero}")
+	@Path("/{id}")
 	@GET
 	@Produces("application/json")
-	public Response get(@PathParam("numero") Integer numero) {
+	public Response get(@PathParam("id") Long id) {
 		DAO<Conta> dao = new DAO<>(Conta.class);
-		Conta conta = dao.consultarGenerico("Conta.consultarPorNumero", numero);
+		Conta conta = dao.consultarGenerico("Conta.consultarPorId", id);
 		if (conta != null) {
 			return Response.ok(conta).build();
 		} else {
@@ -49,18 +48,14 @@ public class ContaResource {
 		}
 	}
 
-	@Path("/{from}/{to}")
+	@Path("/{banco}/{from}/{to}")
 	@GET
 	@Produces("application/json")
-	public Response get(@PathParam("from") Integer from, 
+	public Response get(@PathParam("banco") String banco,
+						@PathParam("from") Integer from, 
 			            @PathParam("to") Integer to) {
-		EntityManager manager = JPAEntityManager.getEntityManager();
-		TypedQuery<Conta> query = manager
-				.createQuery("select c from Conta c where c.numero between ?1 and ?2",
-				Conta.class);
-		query.setParameter(1, from);
-		query.setParameter(2, to);
-		List<Conta> contas = query.getResultList();
+		DAO<Conta> dao = new DAO<>(Conta.class);
+		List<Conta> contas = dao.listarGenerico("Conta.listarPorBancoENumero", banco, from, to);
 		return Response.ok(contas).build();
 	}
 
@@ -68,12 +63,8 @@ public class ContaResource {
 	@GET
 	@Produces("application/json")
 	public Response getByTitular(@PathParam("titular") String titular) {
-		EntityManager manager = JPAEntityManager.getEntityManager();
-		TypedQuery<Conta> query = manager
-				.createQuery("select c from Conta c where c.titular like ?1",
-				Conta.class);
-		query.setParameter(1, '%' + titular + '%');
-		List<Conta> contas = query.getResultList();
+		DAO<Conta> dao = new DAO<>(Conta.class);
+		List<Conta> contas = dao.listarGenerico("Conta.listarPorNomeCliente", '%' + titular + '%');
 		return Response.ok(contas).build();
 	}
 	
@@ -82,16 +73,12 @@ public class ContaResource {
 	@GET
 	@Produces("application/json")
 	public Response getByBanco(@PathParam("banco") String banco) {
-		EntityManager manager = JPAEntityManager.getEntityManager();
-		TypedQuery<Conta> query = manager
-				.createQuery("select c from Conta c where c.banco like ?1",
-				Conta.class);
-		query.setParameter(1, banco + "___");
-		List<Conta> contas = query.getResultList();
+		DAO<Conta> dao = new DAO<>(Conta.class);
+		List<Conta> contas = dao.listarGenerico("Conta.listarPorBanco", banco + "___");
 		return Response.ok(contas).build();
 	}
 
-	@Path("/agencia/{agencias}")
+	@Path("/agencia/{banco}/{agencias}")
 	@GET
 	@Produces("application/json")
 	public Response getByAgencia(@PathParam("banco") String banco, 
@@ -99,16 +86,18 @@ public class ContaResource {
 		Set<String> a = agencias.getMatrixParameters().keySet();
 		EntityManager manager = JPAEntityManager.getEntityManager();
 		
-		String jpql = "select c from Conta c where c.agencia in (?1";
+		String jpql = "select c from Conta c where c.banco=?1 and c.agencia in (?2";
+		
 		for (int i = 2; i <= a.size(); i++) {
-			jpql += ", ?" + (i) ;
+			jpql += ", ?" + (i + 1) ;
 		}
 		jpql += ")";
 		
 		TypedQuery<Conta> query = manager.createQuery(jpql, Conta.class);
 		
+		query.setParameter(1, banco);
 		Iterator<String> it = a.iterator();
-		for (int i = 1; it.hasNext(); i++) {
+		for (int i = 2; it.hasNext(); i++) {
 			query.setParameter(i, it.next());
 		}
 		

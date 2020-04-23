@@ -1,61 +1,55 @@
 package financas.model;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import financas.model.Cliente;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Table(name = "tb_conta")
 @Entity
 @NamedQueries({ 
 	@NamedQuery(name = "Conta.listarTodas", 
-			    query = "select c from Conta c order by c.titular"),
-	@NamedQuery(name = "Conta.consultarPorBanco", 
-	            query = "select c from Conta c where c.banco=?1"),
-	@NamedQuery(name = "Conta.consultarPorNumero",
-	            query = "select c from Conta c where c.numero=?1")
+                query = "select c from Conta c"),
+	@NamedQuery(name = "Conta.consultarPorId", 
+    			query = "select c from Conta c where c.id=?1"),
+	@NamedQuery(name = "Conta.listarPorBanco", 
+	            query = "select c from Conta c where c.banco like ?1"),
+	@NamedQuery(name = "Conta.listarPorBancoENumero", 
+                query = "select c from Conta c where c.banco=?1 and c.numero between ?2 and ?3"),
+	@NamedQuery(name = "Conta.listarPorNomeCliente", 
+    			query = "select c from Conta c join Cliente cc on cc.conta = c where cc.nome like ?1"),
+	
 })
-public class Conta implements Serializable {
+public class Conta extends AbstractEntity {
 	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@Column(name = "nm_titular", length = 100)
-	private String titular;
 	@Column(name = "nm_banco", length = 50)
 	private String banco;
 	@Column(name = "nm_agencia", length = 50)
 	private String agencia;
-	@Column(name = "nr_numero", unique = true)
+	@Column(name = "nr_numero")
 	private Integer numero;
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+    @JoinColumn(name = "conta_id")
+    private List<Movimentacao> movimentacoes = 
+                                   new ArrayList<>();
+
 
 	public Conta() {
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public Conta(Integer numero) {
 		setNumero(numero);
-	}
-
-	public String getTitular() {
-		return titular;
-	}
-
-	public void setTitular(String titular) {
-		this.titular = titular;
 	}
 
 	public String getBanco() {
@@ -81,34 +75,19 @@ public class Conta implements Serializable {
 	public void setNumero(Integer numero) {
 		this.numero = numero;
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((numero == null) ? 0 : numero.hashCode());
-		return result;
+	
+    @JsonIgnore
+	public List<Movimentacao> getMovimentacoes() {
+		return movimentacoes;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!(obj instanceof Conta))
-			return false;
-		Conta other = (Conta) obj;
-		if (numero == null) {
-			if (other.numero != null)
-				return false;
-		} else if (!numero.equals(other.numero))
-			return false;
-		return true;
+    @JsonProperty
+	public void setMovimentacoes(List<Movimentacao> movimentacoes) {
+		this.movimentacoes = movimentacoes;
 	}
 
 	@Override
 	public String toString() {
-		return "Conta [id=" + id + ",titular=" + titular + ", banco=" + banco + ", agencia=" + agencia + ", numero="
-				+ numero + "]";
+		return "Conta [id=" + getId() + ", banco=" + banco + ", agencia=" + agencia + ", numero=" + numero + "]";
 	}
-
 }
