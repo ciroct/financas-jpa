@@ -1,10 +1,6 @@
 package financas.model;
 
 import javax.persistence.Column;
-<<<<<<< HEAD
-=======
-import javax.persistence.DiscriminatorValue;
->>>>>>> 85d42128fc868fbc6a336e5812a54aec74fcb5fd
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -18,10 +14,6 @@ import javax.persistence.Table;
 	@NamedQuery(name = "PessoaJuridica.consultarPorCnpj", 
                 query="select pj from PessoaJuridica pj where pj.cnpj=?1")
 })
-<<<<<<< HEAD
-=======
-//@DiscriminatorValue("Pessoa Jurídica")
->>>>>>> 85d42128fc868fbc6a336e5812a54aec74fcb5fd
 public class PessoaJuridica extends Cliente {
 	private static final long serialVersionUID = 1L;
     @Column(name = "cd_cnpj", length = 14)

@@ -39,7 +39,16 @@ public class MovimentacaoResource {
 		List<Movimentacao> mov = dao.listarGenerico("Movimentacao.listarPorConta", numConta);
 		return Response.ok(mov).build();
 	}	
-	
+
+	@Path("/categoria/{categoria}")
+	@GET
+	@Produces("application/json")
+	public Response getByCategeoria(@PathParam("categoria") String categoria) {
+		DAO<Movimentacao> dao = new DAO<>(Movimentacao.class);
+		List<Movimentacao> mov = dao.listarGenerico("Movimentacao.listarPorCategoria", categoria);
+		return Response.ok(mov).build();
+	}	
+
 	@Path("/{from}/{to}")
 	@GET
 	@Produces("application/json")

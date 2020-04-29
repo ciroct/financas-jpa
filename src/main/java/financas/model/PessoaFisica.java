@@ -8,10 +8,6 @@ import javax.persistence.Table;
 
 @Table(name = "tb_pessoa_fisica")
 @Entity
-<<<<<<< HEAD
-=======
-//@DiscriminatorValue("Pessoa Física")
->>>>>>> 85d42128fc868fbc6a336e5812a54aec74fcb5fd
 @NamedQueries({
 	@NamedQuery(name = "PessoaFisica.listarTodas", 
 			    query="select pf from PessoaFisica pf order by pf.nome"),

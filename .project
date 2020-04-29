@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-<<<<<<< HEAD
-	<name>unisantos-financas-jpa-many</name>
-=======
-	<name>unisantos-financas-jpa-heranca</name>
->>>>>>> 85d42128fc868fbc6a336e5812a54aec74fcb5fd
+	<name>unisantos-financas-jpa-categoria</name>
 	<comment></comment>
 	<projects>
 	</projects>
