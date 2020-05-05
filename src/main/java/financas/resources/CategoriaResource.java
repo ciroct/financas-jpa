@@ -42,6 +42,16 @@ public class CategoriaResource {
 		}
 	}
 
+	@Path("nome/{nome}")
+	@GET
+	@Produces("application/json")
+	public Response getByName(@PathParam("nome") String nome) {
+		DAO<Categoria> dao = new DAO<>(Categoria.class);
+		List<Categoria> categorias = dao.listarGenerico("Categoria.listarPorNome", '%'+ nome + '%');
+		return Response.ok(categorias).build();
+	}
+
+	
 	@POST
 	@Produces("application/json")
 	@Consumes("application/json")

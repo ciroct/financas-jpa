@@ -10,7 +10,12 @@ import javax.persistence.Table;
 @Entity
 @NamedQueries({
 	@NamedQuery(name = "Categoria.listarTodas",
-			    query = "select c from Categoria c order by c.nome") 
+			    query = "select c from Categoria c order by c.nome"),
+	@NamedQuery(name = "Categoria.consultarPorId",
+    			query = "select c from Categoria c where c.id=?1"),
+	@NamedQuery(name = "Categoria.listarPorNome",
+				query = "select c from Categoria c where c.nome like ?1 order by c.nome") 
+
 })
 public class Categoria extends AbstractEntity {
 	private static final long serialVersionUID = 1L;

@@ -27,10 +27,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
              //   query = "select m from Conta c join c.movimentacoes m on c.numero=?1"),
 			      query = "select m from Movimentacao m where m.conta.numero=?1"),
 	@NamedQuery(name = "Movimentacao.listarPorData",
-                query = "select m from Movimentacao m where m.data between ?1 and ?2")
-	/*
+                query = "select m from Movimentacao m where m.data between ?1 and ?2"),	
 	@NamedQuery(name = "Movimentacao.listarPorCategoria",
-				query="select m from Movimentacao m join m.categorias c on c.nome like ?1")*/
+				query="select m from Movimentacao m join m.categorias c on c.nome like ?1")
 })
 public class Movimentacao extends AbstractEntity {
 	private static final long serialVersionUID = 1L;
@@ -46,11 +45,11 @@ public class Movimentacao extends AbstractEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date data;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Conta conta;
     
     
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Categoria> categorias;
 	
 
