@@ -24,25 +24,30 @@ import financas.model.TipoMovimentacao;
 import financas.model.dao.DAO;
 import financas.util.jpa.JPAEntityManager;
 
-@Path("/movimentacao")
-public class MovimentacaoResource {
+@Path("/movimentacoes/protected")
+public class MovimentacaoResource implements ResourceInterface<Movimentacao> {
 
 	@GET
 	@Produces("application/json")
-	public Response getAll() {
+	@Override
+	public Response get() {
 		DAO<Movimentacao> dao = new DAO<>(Movimentacao.class);
 		List<Movimentacao> mov = dao.listarGenerico("Movimentacao.listarTodas");
 
 		return Response.ok(mov).build();
 	}
 
-	@Path("/{num_conta}")
+	@Path("/{id}")
 	@GET
 	@Produces("application/json")
-	public Response get(@PathParam("num_conta") Integer numConta) {
+	@Override
+	public Response getById(@PathParam("id") Long id) {
 		DAO<Movimentacao> dao = new DAO<>(Movimentacao.class);
-		List<Movimentacao> mov = dao.listarGenerico("Movimentacao.listarPorConta", numConta);
-		return Response.ok(mov).build();
+		Movimentacao mov = dao.consultar(id);
+		if (mov != null) {
+			return Response.ok(mov).build();
+		}
+		return Response.status(Response.Status.NOT_FOUND).build();
 	}	
 
 	@Path("/categoria/{categoria}")
@@ -167,7 +172,8 @@ public class MovimentacaoResource {
 	@POST
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Response add(Movimentacao movimentacao) {
+	@Override
+	public Response post(Movimentacao movimentacao) {
 		DAO<Movimentacao> dao = new DAO<>(Movimentacao.class);
 		dao.adicionar(movimentacao);
 		return Response.ok(movimentacao).build();
@@ -176,7 +182,8 @@ public class MovimentacaoResource {
 	@PUT
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Response update(Movimentacao movimentacao) {
+	@Override
+	public Response put(Movimentacao movimentacao) {
 		DAO<Movimentacao> dao = new DAO<>(Movimentacao.class);
 		dao.alterar(movimentacao);
 		return Response.ok(movimentacao).build();
@@ -185,6 +192,7 @@ public class MovimentacaoResource {
 	@Path("/{id}")
 	@DELETE
 	@Produces("application/json")
+	@Override
 	public Response delete(@PathParam("id") Long id) {
 		DAO<Movimentacao> dao = new DAO<>(Movimentacao.class);
 		if (dao.excluir(id)) {

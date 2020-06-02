@@ -24,7 +24,7 @@ public class DAO<T> {
 			manager.getTransaction().commit();
 		} finally {
 			manager.close();
-		}
+		}		
 	}
 
 	public T consultar(Long id) {

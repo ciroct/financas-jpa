@@ -15,37 +15,50 @@ import javax.ws.rs.core.Response;
 import financas.model.PessoaJuridica;
 import financas.model.dao.DAO;
 
-@Path("/pessoa_juridica")
-public class PessoaJuridicaResource {
+@Path("/pessoas_juridicas/protected")
+public class PessoaJuridicaResource implements ResourceInterface<PessoaJuridica> {
 
 	@GET
 	@Produces("application/json")
-	public Response getAll() {
+	@Override
+	public Response get() {
 		DAO<PessoaJuridica> dao = new DAO<>(PessoaJuridica.class);
 		List<PessoaJuridica> contas = dao.listarGenerico("PessoaJuridica.listarTodas");
 
 		return Response.ok(contas).build();
 	}
 
-
-	@Path("/{cnpj}")
+	@Path("/{id}")
 	@GET
 	@Produces("application/json")
+	@Override
+	public Response getById(@PathParam("id") Long id) {
+		DAO<PessoaJuridica> dao = new DAO<>(PessoaJuridica.class);
+		PessoaJuridica pf = dao.consultar(id);
+		if (pf != null) {
+			return Response.ok(pf).build();
+		} 
+		return Response.status(Response.Status.NOT_FOUND).build();		
+	}
 
+
+	@Path("/cnpj/{cnpj}")
+	@GET
+	@Produces("application/json")
 	public Response get(@PathParam("cnpj") String cnpj) {
 		DAO<PessoaJuridica> dao = new DAO<>(PessoaJuridica.class);
 		PessoaJuridica pf = dao.consultarGenerico("PessoaJuridica.consultarPorCnpj", cnpj);
 		if (pf != null) {
 			return Response.ok(pf).build();
-		} else {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
+		} 
+		return Response.status(Response.Status.NOT_FOUND).build();		
 	}
 	
 	@POST
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Response add(PessoaJuridica pessoaJuridica) {
+	@Override
+	public Response post(PessoaJuridica pessoaJuridica) {
 		DAO<PessoaJuridica> dao = new DAO<>(PessoaJuridica.class);
 		dao.adicionar(pessoaJuridica);
 		return Response.ok(pessoaJuridica).build();
@@ -54,7 +67,8 @@ public class PessoaJuridicaResource {
 	@PUT
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Response update(PessoaJuridica pessoaJuridica) {
+	@Override
+	public Response put(PessoaJuridica pessoaJuridica) {
 		DAO<PessoaJuridica> dao = new DAO<>(PessoaJuridica.class);
 		dao.alterar(pessoaJuridica);
 		return Response.ok(pessoaJuridica).build();
@@ -63,6 +77,7 @@ public class PessoaJuridicaResource {
 	@Path("/{id}")
 	@DELETE
 	@Produces("application/json")
+	@Override
 	public Response delete(@PathParam("id") Long id) {
 		DAO<PessoaJuridica> dao = new DAO<>(PessoaJuridica.class);
 		if (dao.excluir(id)) {

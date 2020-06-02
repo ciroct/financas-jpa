@@ -13,15 +13,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import financas.model.Categoria;
-import financas.model.Categoria;
 import financas.model.dao.DAO;
 
-@Path("/categoria")
-public class CategoriaResource {
+@Path("/categorias/protected")
+public class CategoriaResource implements ResourceInterface<Categoria> {
 
 	@GET
 	@Produces("application/json")
-	public Response getAll() {
+	@Override
+	public Response get() {
 		DAO<Categoria> dao = new DAO<>(Categoria.class);
 		List<Categoria> categorias = dao.listarGenerico("Categoria.listarTodas");
 
@@ -32,7 +32,8 @@ public class CategoriaResource {
 	@Path("/{id}")
 	@GET
 	@Produces("application/json")
-	public Response get(@PathParam("id") Long id) {
+	@Override
+	public Response getById(@PathParam("id") Long id) {
 		DAO<Categoria> dao = new DAO<>(Categoria.class);
 		Categoria categoria = dao.consultarGenerico("Categoria.consultarPorId", id);
 		if (categoria != null) {
@@ -55,7 +56,8 @@ public class CategoriaResource {
 	@POST
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Response add(Categoria categoria) {
+	@Override
+	public Response post(Categoria categoria) {
 		DAO<Categoria> dao = new DAO<>(Categoria.class);
 		dao.adicionar(categoria);
 		return Response.ok(categoria).build();
@@ -64,7 +66,8 @@ public class CategoriaResource {
 	@PUT
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Response update(Categoria categoria) {
+	@Override
+	public Response put(Categoria categoria) {
 		DAO<Categoria> dao = new DAO<>(Categoria.class);
 		dao.alterar(categoria);
 		return Response.ok(categoria).build();
@@ -73,6 +76,7 @@ public class CategoriaResource {
 	@Path("/{id}")
 	@DELETE
 	@Produces("application/json")
+	@Override
 	public Response delete(@PathParam("id") Long id) {
 		DAO<Categoria> dao = new DAO<>(Categoria.class);
 		if (dao.excluir(id)) {

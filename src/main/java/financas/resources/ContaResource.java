@@ -22,12 +22,13 @@ import financas.model.dao.DAO;
 import financas.model.dto.ContaComNumeroEAgenciaDTO;
 import financas.util.jpa.JPAEntityManager;
 
-@Path("/conta")
-public class ContaResource {
-
+@Path("/contas/protected")
+public class ContaResource implements ResourceInterface<Conta> {
+	
 	@GET
 	@Produces("application/json")
-	public Response getAll() {
+	@Override
+	public Response get() {
 		DAO<Conta> dao = new DAO<>(Conta.class);
 		List<Conta> contas = dao.listarGenerico("Conta.listarTodas");
 
@@ -38,7 +39,8 @@ public class ContaResource {
 	@Path("/{id}")
 	@GET
 	@Produces("application/json")
-	public Response get(@PathParam("id") Long id) {
+	@Override
+	public Response getById(@PathParam("id") Long id) {
 		DAO<Conta> dao = new DAO<>(Conta.class);
 		Conta conta = dao.consultarGenerico("Conta.consultarPorId", id);
 		if (conta != null) {
@@ -121,7 +123,8 @@ public class ContaResource {
 	@POST
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Response add(Conta conta) {
+	@Override
+	public Response post(Conta conta) {
 		DAO<Conta> dao = new DAO<>(Conta.class);
 		dao.adicionar(conta);
 		return Response.ok(conta).build();
@@ -130,7 +133,8 @@ public class ContaResource {
 	@PUT
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Response update(Conta conta) {
+	@Override
+	public Response put(Conta conta) {
 		DAO<Conta> dao = new DAO<>(Conta.class);
 		dao.alterar(conta);
 		return Response.ok(conta).build();
@@ -139,6 +143,7 @@ public class ContaResource {
 	@Path("/{id}")
 	@DELETE
 	@Produces("application/json")
+	@Override
 	public Response delete(@PathParam("id") Long id) {
 		DAO<Conta> dao = new DAO<>(Conta.class);
 		if (dao.excluir(id)) {
